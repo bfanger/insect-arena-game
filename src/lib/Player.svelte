@@ -1,7 +1,8 @@
 <script lang="ts">
   import { Point, Rectangle, Texture, Sprite as PixiSprite } from "pixi.js";
   import { onTick, Sprite } from "svelte-pixi";
-  import keypad from "./keypad";
+  import Joystick from "./Joystick.svelte";
+  import type { Keypad } from "./keypad";
 
   const idle = new Rectangle(8, 0, 16, 16);
   const texture = new Texture(Texture.from("/sprites.png") as any, idle);
@@ -15,6 +16,7 @@
   };
   export let bounds: Rectangle | undefined = undefined;
   let sprite: PixiSprite;
+  let keypad: Keypad;
 
   let i = 0;
   let x = 50;
@@ -24,21 +26,21 @@
   onTick((d) => {
     let up = false;
     let walking = false;
-    if ($keypad.up) {
+    if (keypad.up) {
       y -= d * speed;
       up = true;
       walking = true;
     }
-    if ($keypad.right) {
+    if (keypad.right) {
       x += d * speed;
       walking = true;
       flip = false;
     }
-    if ($keypad.down) {
+    if (keypad.down) {
       y += d * speed;
       walking = true;
     }
-    if ($keypad.left) {
+    if (keypad.left) {
       x -= d * speed;
       flip = true;
       walking = true;
@@ -74,3 +76,5 @@
   anchor={new Point(0.5, 0.5)}
   scale={new Point(flip ? -1 : 1, 1)}
 />
+
+<Joystick bind:keypad />

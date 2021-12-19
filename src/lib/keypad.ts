@@ -1,6 +1,8 @@
 import { readable } from "svelte/store";
 
 const idle = { up: false, right: false, down: false, left: false };
+export type Keypad = typeof idle;
+
 const keypad = readable(idle, (set) => {
   const $keypad = { ...idle };
   function onKey(e: KeyboardEvent) {
