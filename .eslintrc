@@ -4,5 +4,9 @@
     "project": "./tsconfig.eslint.json",
     "extraFileExtensions": [".cjs", ".svelte"]
   },
-  "extends": ["triple/svelte"]
+  "extends": ["triple/svelte"],
+  "env": {
+    "browser": true,
+    "node": true
+  }
 }

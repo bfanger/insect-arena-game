@@ -1,17 +1,20 @@
 <script lang="ts">
-  import { Point, Rectangle, Texture } from "pixi.js";
+  import { Point, Rectangle, Texture, Sprite as PixiSprite } from "pixi.js";
   import { onTick, Sprite } from "svelte-pixi";
   import keypad from "./keypad";
 
-  const texture = Texture.from("/sprites.png");
-  const animation = [
-    new Rectangle(8, 0, 16, 16),
-    new Rectangle(8 + 16, 0, 16, 16),
-    new Rectangle(8 + 32, 0, 16, 16),
-  ];
-  // eslint-disable-next-line prefer-destructuring
-  texture.frame = animation[0];
-  const upFrame = new Rectangle(8 + 48, 0, 16, 16);
+  const idle = new Rectangle(8, 0, 16, 16);
+  const texture = new Texture(Texture.from("/sprites.png") as any, idle);
+  const frames = {
+    walk: [
+      idle,
+      new Rectangle(8 + 16, 0, 16, 16),
+      new Rectangle(8 + 32, 0, 16, 16),
+    ],
+    up: new Rectangle(8 + 48, 0, 16, 16),
+  };
+  export let bounds: Rectangle | undefined = undefined;
+  let sprite: PixiSprite;
 
   let i = 0;
   let x = 50;
@@ -42,15 +45,29 @@
     }
 
     if (up) {
-      texture.frame = upFrame;
+      texture.frame = frames.up;
     } else if (walking) {
       i += 0.1;
-      texture.frame = animation[Math.floor(i) % animation.length];
+      texture.frame = frames.walk[Math.floor(i) % frames.walk.length];
     }
+    if (x < -8) {
+      x = 128 + 8;
+    }
+    if (x > 128 + 8) {
+      x = -8;
+    }
+    if (y < -8) {
+      y = 128 + 8;
+    }
+    if (y > 128 + 8) {
+      y = -8;
+    }
+    bounds = sprite.getBounds();
   });
 </script>
 
 <Sprite
+  bind:instance={sprite}
   {texture}
   x={Math.round(x)}
   y={Math.round(y)}
